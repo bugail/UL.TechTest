@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-//  <copyright file="FizzBuzz.cshtml.cs" company="Bugail Consulting Ltd">
+//  <copyright file="Factorial.cshtml.cs" company="Bugail Consulting Ltd">
 //      Copyright 2023 (c) Bugail Consulting Ltd. All rights reserved.
 //  </copyright>
 //  --------------------------------------------------------------------------------------------------------------------
@@ -12,43 +12,37 @@ namespace UL.UI.Web.Pages
     using Microsoft.AspNetCore.Mvc;
     using UL.Abstractions.Interfaces;
 
-    public class FizzBuzzModel : PageModel
+    public class FactorialModel : PageModel
     {
-        private readonly IFizzBuzzService service;
         private readonly ILogger<FizzBuzzModel> logger;
+        private readonly IFactorialService service;
 
-        public FizzBuzzModel(IFizzBuzzService service, ILogger<FizzBuzzModel>logger)
+        public FactorialModel(IFactorialService service, ILogger<FizzBuzzModel>logger)
         {
             this.service = service;
             this.logger = logger;
-            this.Start = 1;
-            this.End = 100;
+            this.Value = 3;
         }
 
         public void OnGet()
         {
             try
             {
-                this.logger.LogInformation("OnGet - Running FizzBuzz - Start: {Start}, End: {End}", this.Start, this.End);
-                var collection = Enumerable.Range(this.Start, this.End);
-                this.Results = this.service.GetFizzBuzzList(collection);
+                this.logger.LogInformation("OnGet - Running Factorial - Value: {Value}", this.Value);
+                this.Result = this.service.Calculate(this.Value).ToString();
             }
             catch (Exception e)
             {
                 this.ErrorMessage = e.Message;
-                this.logger.LogError(e, "OnGet - Error - Start: {Start}, End: {End}", this.Start, this.End);
+                this.logger.LogError(e, "OnGet - Error - Value: {Value}, End: {End}", this.Value );
             }
         }
 
-        public IEnumerable<string> Results { get; set; }
-
         [FromQuery]
         [Range(1,100)]
-        public int Start { get; set; }
+        public int Value { get; set; }
 
-        [FromQuery]
-        [Range(1, 100)]
-        public int End { get; set; }
+        public string Result { get; set; }
 
         public string ErrorMessage { get; set; }
     }

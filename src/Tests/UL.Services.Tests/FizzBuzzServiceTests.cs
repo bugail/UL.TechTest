@@ -14,6 +14,7 @@ namespace UL.Services.Tests
     using NSubstitute;
     using NUnit.Framework;
     using UL.Abstractions.Interfaces;
+    using UL.Core.Requests;
     using Ul.Services.Strategies;
 
     [TestFixture]
@@ -21,17 +22,19 @@ namespace UL.Services.Tests
     {
         private List<IFizzBuzzStrategy> stategies;
         private FizzBuzzService target;
+        private ILogger<FizzBuzzService> logger;
 
         [SetUp]
         public void Setup()
         {
+            this.logger = Substitute.For<ILogger<FizzBuzzService>>();
             this.stategies = new List<IFizzBuzzStrategy>
             {
                 new FizzStrategy(),
                 new BuzzStrategy()
             };
 
-            this.target = new FizzBuzzService(this.stategies);
+            this.target = new FizzBuzzService(this.stategies, this.logger);
         }
 
         [Test]
@@ -75,6 +78,21 @@ namespace UL.Services.Tests
             action.Should()
                 .Throw<ArgumentException>()
                 .WithMessage("*collection*");
+        }
+
+        [Test]
+        public void GetFizzBuzzList_NullRequest_ThrowsException()
+        {
+            // Arrange
+            FizzBuzzRequest request = null;
+
+            // Act
+            Func<IEnumerable<string>> action = () => this.target.GetFizzBuzzList(request);
+
+            // Assert
+            action.Should()
+                .Throw<ArgumentNullException>()
+                .WithMessage("*request*");
         }
     }
 }

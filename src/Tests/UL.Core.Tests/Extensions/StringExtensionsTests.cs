@@ -13,7 +13,12 @@ namespace UL.Core.Tests
     [TestFixture]
     public class StringExtensionsTests
     {
-        [TestCase("", true)]
+        [TestCase("", false)]
+        [TestCase(null, false)]
+        [TestCase("bob", false)]
+        [TestCase("12x", false)]
+        [TestCase("1337", true)]
+        [TestCase("01", true)]
         public void IsNumeric_ValidString_ReturnsCorrectResult(string value, bool expectedResult)
         {
             // Act

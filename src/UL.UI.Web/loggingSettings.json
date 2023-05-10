@@ -1,6 +1,6 @@
 {
   "Serilog": {
-    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Async", "Serilog.Sinks.ApplicationInsights" ],
+    "Using": [ "Serilog.Sinks.Console", "Serilog.Sinks.Async" ],
     "MinimumLevel": {
       "Default": "Information",
       "Override": {
@@ -16,13 +16,6 @@
         "Name": "Console",
         "Args": {
           "outputTemplate": "\"[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj} {Properties:j}{NewLine}{Exception}"
-        }
-      },
-      {
-        "Name": "ApplicationInsights",
-        "Args": {
-          "telemetryConverter": "Serilog.Sinks.ApplicationInsights.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights",
-          "outputTemplate": "[{Component}|{MachineName}|{ThreadId}] {Timestamp:yyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] <{SourceContext}> {Message:lj}{NewLine}{Exception}"
         }
       }
     ],

@@ -2,31 +2,54 @@
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using UL.Abstractions.Interfaces;
 using UL.Core.Extensions;
+using UL.Core.Requests;
 using UL.Services.Extensions;
 
 internal class Program
 {
     static void Main(string[] args)
     {
-        using IHost host = Host.CreateDefaultBuilder(args)
-            .ConfigureServices(services =>
-                {
-                    services.AddServices();
-                })
-            .Build();
+        // Setup serilog static logger
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console()
+            .CreateBootstrapLogger();
 
-        var showMenu = true;
-
-        while (showMenu)
+        try
         {
-            showMenu = MainMenu(host.Services);
+            Log.Information("Starting Account Service Web");
+
+            using IHost host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices(services =>
+                    {
+                        services.AddServices();
+                    })
+                .Build();
+
+            var showMenu = true;
+
+            while (showMenu)
+            {
+                showMenu = MainMenu(host.Services);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Host terminated unexpectedly");
+        }
+        finally
+        {
+            Log.CloseAndFlush();
         }
     }
 
-    private static bool MainMenu(IServiceProvider provider)
+    private static bool MainMenu(IServiceProvider hostProvider)
     {
+        using var serviceScope = hostProvider.CreateScope();
+        var provider = serviceScope.ServiceProvider;
+
         Console.Clear();
         Console.WriteLine("Choose an option:");
         Console.WriteLine("1) FizzBuzz");
@@ -49,30 +72,45 @@ internal class Program
         }
     }
 
-    private static void HandleFizzBuzz(IServiceProvider hostProvider)
+    private static void HandleFizzBuzz(IServiceProvider provider)
     {
-        using var serviceScope = hostProvider.CreateScope();
-        var provider = serviceScope.ServiceProvider;
-        var service = provider.GetRequiredService<IFizzBuzzService>();
-
-        var list = Enumerable.Range(1, 100).ToList();
-        var result = service.GetFizzBuzzList(list);
-
-        foreach (var item in result)
+        try
         {
-            Console.WriteLine(item);
+            var service = provider.GetRequiredService<IFizzBuzzService>();
+
+            Console.Write("\n\n");
+            Console.Write("Calculate fizzbuzz for a range:\n");
+            Console.Write("--------------------------------------------");
+            Console.Write("\n\n");
+
+            Console.Write("Input the start : ");
+            var startValue = Console.ReadLine();
+
+            Console.Write("Input the end : ");
+            var endString = Console.ReadLine();
+
+            var request = new FizzBuzzRequest(startValue, endString);
+            var result = service.GetFizzBuzzList(request);
+
+            foreach (var item in result)
+            {
+                Console.WriteLine(item);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.Message);
         }
 
+        Console.Write("\n\n");
         Console.WriteLine("Press Enter to continue.");
         Console.ReadLine();
     }
 
-    private static void HandleFactorial(IServiceProvider hostProvider)
+    private static void HandleFactorial(IServiceProvider provider)
     {
         try
         {
-            using var serviceScope = hostProvider.CreateScope();
-            var provider = serviceScope.ServiceProvider;
             var service = provider.GetRequiredService<IFactorialService>();
 
             Console.Write("\n\n");
@@ -98,6 +136,7 @@ internal class Program
             Console.WriteLine(e.Message);
         }
 
+        Console.Write("\n\n");
         Console.WriteLine("Press Enter to continue.");
         Console.ReadLine();
 

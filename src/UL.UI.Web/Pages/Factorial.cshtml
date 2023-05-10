@@ -1,0 +1,50 @@
+﻿@page
+@model FactorialModel
+@{
+    ViewData["Title"] = "Factorial Test";
+}
+<h1>@ViewData["Title"]</h1>
+
+<form>
+    <div class="form-group">
+        <label for="exampleInputEmail1">Start Range</label>
+        <input type="number" class="form-control" placeholder="Enter start range" asp-for="Value">
+        <span asp-validation-for="Value" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Run</button>
+</form>
+
+
+<h2>Results</h2>
+
+@if (!string.IsNullOrEmpty(Model.Result))
+{
+    <p>The factorial of @Model.Value is @Model.Result</p>
+}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Sorry there was an error.</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @Model.ErrorMessage
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <script type="text/javascript">
+        window.onload = function () {
+            $("#exampleModal").modal("show")
+        };
+    </script>
+}

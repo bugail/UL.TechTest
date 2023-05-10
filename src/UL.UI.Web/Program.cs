@@ -42,12 +42,7 @@ namespace UL.UI.Web
             Log.Logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .ReadFrom.Configuration(GetLoggerConfiguration())
-                .WriteTo.Debug()
-                .CreateLogger();
-
-            // Create a Microsoft.Extensions.Logging.ILoggerFactory from the serilog static logger
-            var loggerFactory = new SerilogLoggerFactory(Log.Logger);
-            startUpLogger = loggerFactory.CreateLogger<Program>();
+                .CreateBootstrapLogger();
 
             try
             {
@@ -81,13 +76,9 @@ namespace UL.UI.Web
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Host
-                .UseSerilog((hostingContext, loggerConfiguration) =>
-                    {
-                        loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration)
-                            .Enrich.FromLogContext()
-                            .Enrich.WithProperty(nameof(hostingContext.HostingEnvironment.EnvironmentName), hostingContext.HostingEnvironment.EnvironmentName);
-                    })
+            builder
+                .Host
+                .UseSerilog()
                 .ConfigureServices(services => ConfigureServices(services, builder));
 
             var app = BuildWebApplication(builder);

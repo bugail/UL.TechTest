@@ -7,6 +7,7 @@
 namespace UL.Abstractions.Interfaces
 {
     using System.Collections.Generic;
+    using UL.Core.Requests;
 
     /// <summary>
     /// The fizz buzz service interface.
@@ -18,6 +19,13 @@ namespace UL.Abstractions.Interfaces
         /// </summary>
         /// <param name="collection">The collection</param>
         /// <returns>A list of <see cref="string"/>.</returns>
-        IList<string> GetFizzBuzzList(IEnumerable<int> collection);
+        IEnumerable<string> GetFizzBuzzList(IEnumerable<int> collection);
+
+        /// <summary>
+        /// Gets the list of FizzBuzz values.
+        /// </summary>
+        /// <param name="request">The request object.</param>
+        /// <returns>A list of <see cref="string"/>.</returns>
+        IEnumerable<string> GetFizzBuzzList(FizzBuzzRequest request);
     }
 }
