@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="$(SolutionDir)/ProjectPatterns/Archetypes/SharedLibraryArchetype.props" />
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.5.2" />
+    </ItemGroup>
+    
+</Project>

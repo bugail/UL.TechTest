@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="$(SolutionDir)/ProjectPatterns/Archetypes/SharedLibraryArchetype.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\UL.Core\UL.Core.csproj" />
+    </ItemGroup>
+
+</Project>
