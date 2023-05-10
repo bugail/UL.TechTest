@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="$(SolutionDir)/ProjectPatterns/Archetypes/UnitTestingArchetype.props" />
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\UL.Services\UL.Services.csproj" />
+    </ItemGroup>
+
+</Project>
